@@ -1,7 +1,6 @@
 import { storage } from "./storage";
 
-export const BASE_URL = "http://192.168.1.6:8000";
-const API_URL = `${BASE_URL}/api`;
+const API_URL = "http://192.168.1.6:8000/api";
 
 async function getAuthHeaders() {
   const token = await storage.getItem("auth_token");

@@ -1,7 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { resolveImageUrl } from "../../../utils/image";
 import { colors, radius, shadowStyles, spacing } from "../../constants/colors";
 
 export function MediaListItem({
@@ -25,7 +24,7 @@ export function MediaListItem({
       onPress={onPress}
     >
       <Image
-        source={{ uri: resolveImageUrl(imageUrl) ?? fallbackImageUrl }}
+        source={{ uri: imageUrl ?? fallbackImageUrl }}
         contentFit="cover"
         style={styles.image}
       />

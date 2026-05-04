@@ -1,13 +1,12 @@
 import { Image } from "expo-image";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { resolveImageUrl } from "../../../utils/image";
 import { colors, radius, shadowStyles, spacing } from "../../constants/colors";
 
 const CITY_FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&q=80&w=800&h=600";
 
 export function CityCard({ city, onPress }) {
-  const imageUrl = resolveImageUrl(city.images?.[0]?.url) ?? CITY_FALLBACK_IMAGE;
+  const imageUrl = city.images?.[0]?.url ?? CITY_FALLBACK_IMAGE;
 
   return (
     <Pressable

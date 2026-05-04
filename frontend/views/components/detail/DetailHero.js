@@ -1,6 +1,5 @@
 import { Image } from "expo-image";
 import { StyleSheet, View } from "react-native";
-import { resolveImageUrl } from "../../../utils/image";
 import { colors, spacing } from "../../constants/colors";
 
 export function DetailHero({
@@ -13,7 +12,7 @@ export function DetailHero({
     <View style={[styles.hero, { backgroundColor, height }]}>
       {imageUrl && (
         <Image
-          source={{ uri: resolveImageUrl(imageUrl) }}
+          source={{ uri: imageUrl }}
           style={styles.image}
           contentFit="cover"
         />

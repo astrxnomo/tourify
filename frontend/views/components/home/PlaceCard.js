@@ -1,9 +1,6 @@
 import { Image } from "expo-image";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { resolveImageUrl } from "../../../utils/image";
 import { colors, radius, shadowStyles, spacing } from "../../constants/colors";
-
-const FALLBACK = "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=400&h=300";
 
 export function PlaceCard({ place, width, onPress }) {
   return (
@@ -14,7 +11,9 @@ export function PlaceCard({ place, width, onPress }) {
     >
       <Image
         source={{
-          uri: resolveImageUrl(place.images?.[0]?.url) ?? FALLBACK,
+          uri:
+            place.images?.[0]?.url ||
+            "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=400&h=300",
         }}
         contentFit="cover"
         style={styles.image}
