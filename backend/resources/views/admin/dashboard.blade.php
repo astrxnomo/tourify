@@ -3,32 +3,39 @@
 
 @section('content')
 <div class="row g-4 mb-4">
-    <div class="col-md-3">
+    <div class="col-md">
         <div class="card p-4 text-center">
             <i class="bi bi-building text-primary fs-2"></i>
             <h2 class="fw-bold mt-2">{{ $stats['cities'] }}</h2>
             <p class="text-muted mb-0">Ciudades</p>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md">
         <div class="card p-4 text-center">
             <i class="bi bi-tag text-success fs-2"></i>
             <h2 class="fw-bold mt-2">{{ $stats['categories'] }}</h2>
             <p class="text-muted mb-0">Categorías</p>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md">
         <div class="card p-4 text-center">
             <i class="bi bi-geo-alt text-warning fs-2"></i>
             <h2 class="fw-bold mt-2">{{ $stats['places'] }}</h2>
             <p class="text-muted mb-0">Lugares</p>
         </div>
     </div>
-    <div class="col-md-3">
+    <div class="col-md">
         <div class="card p-4 text-center">
             <i class="bi bi-calendar-event text-danger fs-2"></i>
             <h2 class="fw-bold mt-2">{{ $stats['events'] }}</h2>
             <p class="text-muted mb-0">Eventos</p>
+        </div>
+    </div>
+    <div class="col-md">
+        <div class="card p-4 text-center">
+            <i class="bi bi-people-fill text-info fs-2"></i>
+            <h2 class="fw-bold mt-2">{{ $stats['registrations'] ?? 0 }}</h2>
+            <p class="text-muted mb-0">Inscripciones</p>
         </div>
     </div>
 </div>

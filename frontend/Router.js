@@ -7,7 +7,7 @@ import { ActivityIndicator, View } from "react-native";
 import { colors } from "./views/constants/colors";
 import { AuthContext } from "./context/AuthContext";
 import { storage } from "./services/storage";
-import { get } from "./services/post";
+import { get, post } from "./services/post";
 import { usePushNotifications } from "./hooks/usePushNotifications";
 
 import LoginScreen from "./views/public/LoginScreen";
@@ -22,6 +22,7 @@ import PlaceDetailScreen from "./views/public/PlaceDetailScreen";
 import EventDetailScreen from "./views/public/EventDetailScreen";
 import CategoryDetailScreen from "./views/public/CategoryDetailScreen";
 import NotificationsScreen from "./views/public/NotificationsScreen";
+import MyRegistrationsScreen from "./views/public/MyRegistrationsScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -116,6 +117,11 @@ export default function Router() {
   const login = (tokenValue) => setToken(tokenValue);
 
   const logout = async () => {
+    try {
+      await post("/auth/logout");
+    } catch {
+      // Si falla la red, igual cerramos sesión localmente
+    }
     await storage.deleteItem("auth_token");
     setToken(null);
   };
@@ -170,6 +176,11 @@ export default function Router() {
                 name="Notifications"
                 component={NotificationsScreen}
                 options={{ title: "Notificaciones", headerBackTitle: "Atrás" }}
+              />
+              <Stack.Screen
+                name="MyRegistrations"
+                component={MyRegistrationsScreen}
+                options={{ title: "Mis eventos", headerBackTitle: "Atrás" }}
               />
             </>
           ) : (

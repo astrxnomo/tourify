@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EventController extends Controller
 {
@@ -25,9 +26,15 @@ class EventController extends Controller
         return response()->json($events);
     }
 
-    public function show(Event $event): JsonResponse
+    public function show(Request $request, Event $event): JsonResponse
     {
         $event->load(['images', 'city', 'place', 'reviews.user']);
+        $event->loadCount('registrations');
+
+        $user = Auth::guard('sanctum')->user();
+        $event->is_registered = $user
+            ? $event->registrations()->where('user_id', $user->id)->exists()
+            : false;
 
         return response()->json($event);
     }

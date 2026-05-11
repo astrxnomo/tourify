@@ -13,8 +13,17 @@ class AdminEventController extends Controller
 {
     public function index()
     {
-        $events = Event::with(['city', 'place'])->orderByDesc('date')->get();
+        $events = Event::with(['city', 'place'])
+            ->withCount('registrations')
+            ->orderByDesc('date')
+            ->get();
         return view('admin.events.index', compact('events'));
+    }
+
+    public function show(Event $event)
+    {
+        $event->load(['city', 'place', 'registrations.user']);
+        return view('admin.events.show', compact('event'));
     }
 
     public function create()

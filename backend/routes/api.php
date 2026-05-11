@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\EventRegistrationController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PlaceController;
@@ -48,6 +49,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // Reviews
     Route::post('/places/{place}/reviews', [ReviewController::class, 'storeForPlace']);
     Route::post('/events/{event}/reviews', [ReviewController::class, 'storeForEvent']);
+
+    // Event registrations
+    Route::get('/my/registrations', [EventRegistrationController::class, 'index']);
+    Route::post('/events/{event}/register', [EventRegistrationController::class, 'store']);
+    Route::delete('/events/{event}/register', [EventRegistrationController::class, 'destroy']);
 
     // Notifications
     Route::get('/notifications', [NotificationController::class, 'index']);

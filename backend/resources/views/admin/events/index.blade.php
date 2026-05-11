@@ -11,7 +11,7 @@
     </div>
     <table class="table table-hover align-middle">
         <thead>
-            <tr><th>#</th><th>Título</th><th>Ciudad</th><th>Lugar</th><th>Fecha</th><th>Acciones</th></tr>
+            <tr><th>#</th><th>Título</th><th>Ciudad</th><th>Lugar</th><th>Fecha</th><th>Inscritos</th><th>Acciones</th></tr>
         </thead>
         <tbody>
             @forelse($events as $event)
@@ -22,6 +22,14 @@
                 <td class="text-muted">{{ $event->place?->name ?? '—' }}</td>
                 <td>{{ \Carbon\Carbon::parse($event->date)->format('d/m/Y H:i') }}</td>
                 <td>
+                    <a href="{{ route('admin.events.show', $event) }}" class="badge bg-primary text-decoration-none">
+                        <i class="bi bi-people me-1"></i>{{ $event->registrations_count }}
+                    </a>
+                </td>
+                <td>
+                    <a href="{{ route('admin.events.show', $event) }}" class="btn btn-sm btn-outline-secondary me-1" title="Ver inscritos">
+                        <i class="bi bi-people"></i>
+                    </a>
                     <a href="{{ route('admin.events.edit', $event) }}" class="btn btn-sm btn-outline-primary me-1">
                         <i class="bi bi-pencil"></i>
                     </a>
@@ -35,7 +43,7 @@
                 </td>
             </tr>
             @empty
-            <tr><td colspan="6" class="text-center text-muted py-4">No hay eventos registrados.</td></tr>
+            <tr><td colspan="7" class="text-center text-muted py-4">No hay eventos registrados.</td></tr>
             @endforelse
         </tbody>
     </table>

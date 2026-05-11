@@ -1,6 +1,6 @@
 import { storage } from "./storage";
 
-const API_URL = "http://192.168.1.6:8000/api";
+const API_URL = "http://localhost:8000/api";
 
 async function getAuthHeaders() {
   const token = await storage.getItem("auth_token");

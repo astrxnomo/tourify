@@ -41,4 +41,9 @@ class Event extends Model
     {
         return $this->morphMany(Favorite::class, 'favorable');
     }
+
+    public function registrations(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(EventRegistration::class);
+    }
 }
