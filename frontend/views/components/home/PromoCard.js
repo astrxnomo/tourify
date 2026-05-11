@@ -13,13 +13,12 @@ export function PromoCard({ image, onPress }) {
       />
       <View style={styles.overlay} />
       <View style={styles.content}>
-        <Text style={styles.title}>Explora y descubre nuevos lugares</Text>
+        <Text style={styles.title}>Descubre tu próximo destino</Text>
         <Text style={styles.text}>
-          Explora una variedad de ofertas turísticas interesantes y elige algo
-          para ti.
+          Encuentra ciudades, lugares y eventos únicos seleccionados para ti.
         </Text>
         <Button onPress={onPress} style={styles.button}>
-          Iniciar sesión
+          Explorar lugares
         </Button>
       </View>
     </View>

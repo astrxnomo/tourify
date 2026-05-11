@@ -12,9 +12,7 @@ import {
 } from "react-native";
 import { colors, spacing } from "../constants/colors";
 import { AuthCheckbox } from "../components/auth/AuthCheckbox";
-import { AuthDivider } from "../components/auth/AuthDivider";
 import { AuthInput } from "../components/auth/AuthInput";
-import { SocialAuthButton } from "../components/auth/SocialAuthButton";
 import { Button } from "../components/common/Button";
 import { useRegister } from "../../hooks/useRegister";
 import { useAuth } from "../../context/AuthContext";
@@ -122,19 +120,6 @@ export default function RegisterScreen() {
           <Button onPress={onRegister} style={styles.registerButton}>
             Crear Cuenta
           </Button>
-
-          <AuthDivider text="O" />
-
-          <SocialAuthButton
-            icon="g-translate"
-            iconColor="#DB4437"
-            label="Continuar con Google"
-          />
-          <SocialAuthButton
-            icon="facebook"
-            iconColor="#1877F2"
-            label="Continuar con Facebook"
-          />
 
           <View style={styles.loginContainer}>
             <Text style={styles.loginText}>¿Ya tienes una cuenta? </Text>

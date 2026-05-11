@@ -9,10 +9,12 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useCategories } from "../../hooks/useCategories";
 import { useCities } from "../../hooks/useCities";
+import { useEvents } from "../../hooks/useEvents";
 import { usePlaces } from "../../hooks/usePlaces";
 import { colors, spacing } from "../constants/colors";
 import { CategoryCard } from "../components/explore/CategoryCard";
 import { CityCard } from "../components/explore/CityCard";
+import { EventCard } from "../components/explore/EventCard";
 
 export default function ExploreScreen() {
   const navigation = useNavigation();
@@ -20,8 +22,13 @@ export default function ExploreScreen() {
   const { data: cities, loading: loadingCities } = useCities();
   const { data: categories, loading: loadingCategories } = useCategories();
   const { data: places } = usePlaces();
+  const { data: events, loading: loadingEvents } = useEvents();
 
-  const loading = loadingCities || loadingCategories;
+  const loading = loadingCities || loadingCategories || loadingEvents;
+
+  const upcomingEvents = (events ?? [])
+    .filter((e) => !e.date || new Date(e.date) >= new Date())
+    .slice(0, 10);
 
   const getPreviewImage = (categoryId) =>
     places?.find((p) => p.category_id === categoryId)?.images?.[0]?.url;
@@ -67,6 +74,29 @@ export default function ExploreScreen() {
               ))}
             </ScrollView>
           </View>
+
+          {upcomingEvents.length > 0 && (
+            <View style={styles.section}>
+              <View style={styles.sectionHeading}>
+                <Text style={styles.sectionTitle}>Eventos próximos</Text>
+              </View>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.horizontalContent}
+              >
+                {upcomingEvents.map((event) => (
+                  <EventCard
+                    key={event.id}
+                    event={event}
+                    onPress={() =>
+                      navigation.navigate("EventDetail", { id: event.id })
+                    }
+                  />
+                ))}
+              </ScrollView>
+            </View>
+          )}
 
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Categorías</Text>

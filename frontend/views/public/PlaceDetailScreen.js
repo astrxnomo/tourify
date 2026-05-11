@@ -11,14 +11,16 @@ import {
 } from "react-native";
 import { usePlaceDetail } from "../../hooks/usePlaceDetail";
 import { useFavorites } from "../../hooks/useFavorites";
+import { resolveImageUrl } from "../../utils/image";
 import { colors, spacing } from "../constants/colors";
 import { DetailCard } from "../components/detail/DetailCard";
 import { DetailHero } from "../components/detail/DetailHero";
 import { ReviewCard } from "../components/detail/ReviewCard";
+import { ReviewForm } from "../components/detail/ReviewForm";
 
 export default function PlaceDetailScreen() {
   const { id } = useRoute().params;
-  const { data: place, loading } = usePlaceDetail(id);
+  const { data: place, loading, refresh } = usePlaceDetail(id);
   const { isFavorite, toggleFavorite } = useFavorites();
 
   if (loading) {
@@ -39,7 +41,7 @@ export default function PlaceDetailScreen() {
 
   const isFav = isFavorite("place", place.id);
   const imageUrl =
-    place.images?.[0]?.url ||
+    resolveImageUrl(place.images?.[0]?.url) ||
     "https://images.unsplash.com/photo-1449844908441-8829872d2607?auto=format&fit=crop&q=80&w=800&h=600";
 
   const openMaps = () => {
@@ -127,23 +129,22 @@ export default function PlaceDetailScreen() {
         </Pressable>
       </View>
 
-      {place.reviews && place.reviews.length > 0 && (
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>
-              Reseñas ({place.reviews.length})
-            </Text>
-          </View>
-          {place.reviews.slice(0, 3).map((review) => (
-            <ReviewCard
-              key={review.id}
-              rating={review.rating}
-              comment={review.comment}
-              author={review.user?.name}
-            />
-          ))}
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>
+            Reseñas ({place.reviews?.length || 0})
+          </Text>
         </View>
-      )}
+        <ReviewForm type="place" id={place.id} onSubmitted={refresh} />
+        {place.reviews?.map((review) => (
+          <ReviewCard
+            key={review.id}
+            rating={review.rating}
+            comment={review.comment}
+            author={review.user?.name}
+          />
+        ))}
+      </View>
     </ScrollView>
   );
 }

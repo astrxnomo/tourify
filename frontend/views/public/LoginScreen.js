@@ -12,9 +12,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors, spacing } from "../constants/colors";
-import { AuthDivider } from "../components/auth/AuthDivider";
 import { AuthInput } from "../components/auth/AuthInput";
-import { SocialAuthButton } from "../components/auth/SocialAuthButton";
 import { Button } from "../components/common/Button";
 import { useLogin } from "../../hooks/useLogin";
 import { useAuth } from "../../context/AuthContext";
@@ -77,19 +75,6 @@ export default function LoginScreen() {
           <Button onPress={onLogin} style={styles.loginButton}>
             Iniciar Sesión
           </Button>
-
-          <AuthDivider text="O" />
-
-          <SocialAuthButton
-            icon="g-translate"
-            iconColor="#DB4437"
-            label="Continuar con Google"
-          />
-          <SocialAuthButton
-            icon="facebook"
-            iconColor="#1877F2"
-            label="Continuar con Facebook"
-          />
 
           <View style={styles.signupContainer}>
             <Text style={styles.signupText}>¿No tienes una cuenta? </Text>

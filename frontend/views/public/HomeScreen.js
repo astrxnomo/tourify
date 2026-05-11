@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useCategories } from "../../hooks/useCategories";
+import { useEvents } from "../../hooks/useEvents";
 import { usePlaces, usePlacesFiltered } from "../../hooks/usePlaces";
 import { colors, spacing } from "../constants/colors";
 import { CategoryList } from "../components/home/CategoryList";
@@ -19,6 +20,7 @@ import { PlaceCard } from "../components/home/PlaceCard";
 import { PromoCard } from "../components/home/PromoCard";
 import { SearchBar } from "../components/home/SearchBar";
 import { SectionHeader } from "../components/home/SectionHeader";
+import { EventCard } from "../components/explore/EventCard";
 
 const BASE_FILTERS = [
   { id: "all", label: "Todo" },
@@ -37,6 +39,15 @@ export default function HomeScreen() {
 
   const { data: allPlaces, loading: loadingPlaces } = usePlaces();
   const { data: categories, loading: loadingCategories } = useCategories();
+  const { data: events } = useEvents();
+
+  const upcomingEvents = useMemo(
+    () =>
+      (events ?? [])
+        .filter((e) => !e.date || new Date(e.date) >= new Date())
+        .slice(0, 6),
+    [events],
+  );
 
   const cardWidth = useMemo(
     () => Math.min(Math.max(width * 0.6, 220), 300),
@@ -123,6 +134,33 @@ export default function HomeScreen() {
               navigation.navigate("CategoryDetail", { id: parseInt(id) })
             }
           />
+
+          {upcomingEvents.length > 0 && (
+            <>
+              <SectionHeader
+                title="Eventos próximos"
+                actionLabel="Ver todos"
+                onAction={() => navigation.navigate("Explore")}
+              />
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.placesRow}
+                scrollEventThrottle={16}
+              >
+                {upcomingEvents.map((event) => (
+                  <EventCard
+                    key={event.id}
+                    event={event}
+                    onPress={() =>
+                      navigation.navigate("EventDetail", { id: event.id })
+                    }
+                  />
+                ))}
+              </ScrollView>
+            </>
+          )}
+
           <PromoCard
             image={{
               uri: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?auto=format&fit=crop&q=80&w=800",

@@ -2,6 +2,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import {
   Alert,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -23,6 +24,12 @@ export default function ProfileScreen() {
   const { unreadCount } = useNotifications();
 
   const handleLogout = () => {
+    if (Platform.OS === "web") {
+      if (window.confirm("¿Estás seguro que deseas cerrar sesión?")) {
+        logout();
+      }
+      return;
+    }
     Alert.alert("Cerrar Sesión", "¿Estás seguro que deseas cerrar sesión?", [
       { text: "Cancelar", style: "cancel" },
       { text: "Cerrar Sesión", style: "destructive", onPress: logout },
@@ -74,10 +81,13 @@ export default function ProfileScreen() {
           </View>
         </Pressable>
 
-        <Pressable style={styles.menuItem}>
+        <Pressable
+          style={styles.menuItem}
+          onPress={() => navigation.navigate("MyRegistrations")}
+        >
           <View style={styles.menuItemLeft}>
-            <MaterialIcons name="edit" size={24} color={colors.success} />
-            <Text style={styles.menuItemText}>Editar Perfil</Text>
+            <MaterialIcons name="event-available" size={24} color={colors.success} />
+            <Text style={styles.menuItemText}>Mis eventos</Text>
           </View>
           <MaterialIcons
             name="chevron-right"
@@ -86,26 +96,13 @@ export default function ProfileScreen() {
           />
         </Pressable>
 
-        <Pressable style={styles.menuItem}>
+        <Pressable
+          style={styles.menuItemNoBorder}
+          onPress={() => navigation.navigate("Favorites")}
+        >
           <View style={styles.menuItemLeft}>
-            <MaterialIcons name="star" size={24} color={colors.warning} />
-            <Text style={styles.menuItemText}>Mis Reseñas</Text>
-          </View>
-          <MaterialIcons
-            name="chevron-right"
-            size={24}
-            color={colors.textTertiary}
-          />
-        </Pressable>
-
-        <Pressable style={styles.menuItemNoBorder}>
-          <View style={styles.menuItemLeft}>
-            <MaterialIcons
-              name="settings"
-              size={24}
-              color={colors.textSecondary}
-            />
-            <Text style={styles.menuItemText}>Configuración</Text>
+            <MaterialIcons name="favorite" size={24} color={colors.error} />
+            <Text style={styles.menuItemText}>Mis favoritos</Text>
           </View>
           <MaterialIcons
             name="chevron-right"

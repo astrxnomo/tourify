@@ -2,7 +2,6 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import {
   ActivityIndicator,
-  Alert,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -10,17 +9,30 @@ import {
   View,
 } from "react-native";
 import { useEventDetail } from "../../hooks/useEventDetail";
+import { useEventRegistration } from "../../hooks/useEventRegistration";
 import { useFavorites } from "../../hooks/useFavorites";
+import { resolveImageUrl } from "../../utils/image";
 import { colors, spacing } from "../constants/colors";
 import { DetailCard } from "../components/detail/DetailCard";
 import { DetailHero } from "../components/detail/DetailHero";
 import { ReviewCard } from "../components/detail/ReviewCard";
+import { ReviewForm } from "../components/detail/ReviewForm";
 
 export default function EventDetailScreen() {
   const navigation = useNavigation();
   const { id } = useRoute().params;
-  const { data: event, loading } = useEventDetail(id);
+  const { data: event, loading, refresh } = useEventDetail(id);
   const { isFavorite, toggleFavorite } = useFavorites();
+  const {
+    registered,
+    loading: registering,
+    register,
+    confirmUnregister,
+  } = useEventRegistration({
+    eventId: id,
+    initialRegistered: !!event?.is_registered,
+    onChange: refresh,
+  });
 
   if (loading) {
     return (
@@ -42,19 +54,8 @@ export default function EventDetailScreen() {
   const isUpcoming = eventDate > new Date();
   const isFav = isFavorite("event", event.id);
   const imageUrl =
-    event.images?.[0]?.url ||
+    resolveImageUrl(event.images?.[0]?.url) ||
     "https://images.unsplash.com/photo-1511379938547-c1f69b13d835?auto=format&fit=crop&q=80&w=800&h=600";
-
-  const handleRegister = () => {
-    Alert.alert("Registrarse", "¿Deseas registrarte para este evento?", [
-      { text: "Cancelar", style: "cancel" },
-      {
-        text: "Registrar",
-        onPress: () =>
-          Alert.alert("¡Éxito!", "Te has registrado para el evento"),
-      },
-    ]);
-  };
 
   return (
     <ScrollView
@@ -141,23 +142,64 @@ export default function EventDetailScreen() {
         )}
 
         <Text style={styles.description}>{event.description}</Text>
+
+        {event.registrations_count > 0 && (
+          <View style={styles.attendeesRow}>
+            <MaterialIcons name="people" size={18} color={colors.primary} />
+            <Text style={styles.attendeesText}>
+              {event.registrations_count}{" "}
+              {event.registrations_count === 1
+                ? "persona inscrita"
+                : "personas inscritas"}
+            </Text>
+          </View>
+        )}
       </DetailCard>
 
       {isUpcoming && (
-        <View style={styles.actionButtons}>
+        <View style={styles.registrationBlock}>
+          {registered && (
+            <View style={styles.registeredBadge}>
+              <MaterialIcons
+                name="check-circle"
+                size={20}
+                color={colors.success}
+              />
+              <Text style={styles.registeredText}>
+                Estás inscrito a este evento
+              </Text>
+            </View>
+          )}
           <Pressable
             style={({ pressed }) => [
-              styles.registerButton,
-              pressed && styles.buttonPressed,
+              registered ? styles.cancelButton : styles.registerButton,
+              (pressed || registering) && styles.buttonPressed,
             ]}
-            onPress={handleRegister}
+            onPress={registered ? confirmUnregister : register}
+            disabled={registering}
           >
-            <MaterialIcons
-              name="event-available"
-              size={24}
-              color={colors.textLight}
-            />
-            <Text style={styles.registerButtonText}>Registrarme</Text>
+            {registering ? (
+              <ActivityIndicator
+                color={registered ? colors.error : colors.textLight}
+              />
+            ) : (
+              <>
+                <MaterialIcons
+                  name={registered ? "cancel" : "event-available"}
+                  size={22}
+                  color={registered ? colors.error : colors.textLight}
+                />
+                <Text
+                  style={
+                    registered
+                      ? styles.cancelButtonText
+                      : styles.registerButtonText
+                  }
+                >
+                  {registered ? "Cancelar inscripción" : "Registrarme"}
+                </Text>
+              </>
+            )}
           </Pressable>
         </View>
       )}
@@ -187,21 +229,20 @@ export default function EventDetailScreen() {
         </Pressable>
       </View>
 
-      {event.reviews && event.reviews.length > 0 && (
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>
-            Opiniones ({event.reviews.length})
-          </Text>
-          {event.reviews.map((review) => (
-            <ReviewCard
-              key={review.id}
-              rating={review.rating}
-              comment={review.comment}
-              author={review.user?.name}
-            />
-          ))}
-        </View>
-      )}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>
+          Opiniones ({event.reviews?.length || 0})
+        </Text>
+        <ReviewForm type="event" id={event.id} onSubmitted={refresh} />
+        {event.reviews?.map((review) => (
+          <ReviewCard
+            key={review.id}
+            rating={review.rating}
+            comment={review.comment}
+            author={review.user?.name}
+          />
+        ))}
+      </View>
     </ScrollView>
   );
 }
@@ -258,14 +299,63 @@ const styles = StyleSheet.create({
     gap: spacing.md,
     marginVertical: spacing.md,
   },
+  registrationBlock: {
+    paddingHorizontal: spacing.lg,
+    marginVertical: spacing.md,
+    gap: spacing.md,
+  },
+  registeredBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    backgroundColor: `${colors.success}15`,
+    borderRadius: 12,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
+  },
+  registeredText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: colors.success,
+  },
   registerButton: {
-    flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    gap: spacing.sm,
     backgroundColor: colors.success,
     borderRadius: 12,
     paddingVertical: spacing.lg,
+  },
+  cancelButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: spacing.sm,
+    backgroundColor: colors.surface,
+    borderColor: colors.error,
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingVertical: spacing.lg,
+  },
+  cancelButtonText: {
+    fontSize: 16,
+    color: colors.error,
+    fontWeight: "700",
+  },
+  attendeesRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    marginTop: spacing.md,
+    paddingTop: spacing.md,
+    borderTopWidth: 1,
+    borderTopColor: colors.surfaceLight,
+  },
+  attendeesText: {
+    fontSize: 14,
+    color: colors.textSecondary,
+    fontWeight: "600",
   },
   actionButton: {
     flex: 1,
