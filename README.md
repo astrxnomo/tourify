@@ -1,18 +1,18 @@
 # Tourify
 
-Aplicación móvil multiplataforma para explorar ciudades, lugares de interés y eventos turísticos. Permite a los usuarios descubrir destinos, guardar favoritos, reseñar lugares, inscribirse a eventos y recibir notificaciones push.
+Cross-platform mobile app to explore cities, points of interest and tourist events. Users can discover destinations, save favorites, review places, register for events and receive push notifications.
 
 ## Stack
 
 - **Frontend:** Expo · React Native · React Navigation
 - **Backend:** Laravel 13 · Sanctum · MySQL
 
-## Estructura
+## Structure
 
-- `frontend/` — App cliente (Expo / React Native) — iOS, Android y Web
-- `backend/` — API REST (Laravel 13)
+- `frontend/` — Client app (Expo / React Native) — iOS, Android and Web
+- `backend/` — REST API (Laravel 13)
 
-## Puesta en marcha
+## Getting started
 
 **Backend**
 
@@ -33,10 +33,10 @@ npm install
 npm start
 ```
 
-## Funcionalidades
+## Features
 
-- Autenticación con tokens (registro, login, recuperación)
-- Exploración de ciudades, categorías, lugares y eventos
-- Favoritos y reseñas (relaciones polimórficas)
-- Inscripción a eventos
-- Notificaciones push vía Expo Push Service
+- Token-based authentication (register, login, password recovery)
+- Browse cities, categories, places and events
+- Favorites and reviews (polymorphic relationships)
+- Event registration
+- Push notifications via Expo Push Service
